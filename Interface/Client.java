@@ -142,11 +142,21 @@ public class Client extends JFrame{
     }
 
     private void botaoEnviarActionPerformed(java.awt.event.ActionEvent evt) {
-       
+        try {
+            if (evt.getActionCommand().equals(botaoEnviar.getActionCommand()))
+                enviarMensagem(entradaEnviar.getText());
+        } catch (IOException newEvent) {
+            newEvent.printStackTrace();
+        }
     }
 
     private void botaoSairActionPerformed(java.awt.event.ActionEvent evt) {                                          
-  
+        try{
+            if (evt.getActionCommand().equals(botaoSair.getActionCommand()))
+            sair();
+        } catch (IOException newEvent) {
+            newEvent.printStackTrace();
+        }
     }
     
     public Client() {
