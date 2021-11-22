@@ -135,5 +135,77 @@ public class Client extends JFrame{
 
     private void botaoSairActionPerformed(java.awt.event.ActionEvent evt) {                                          
   
-    }  
+    }
+    
+    public Client() {
+        
+        menuInicial();
+        initComponents();
+        setVisible(true);
+    }
+
+    public boolean menuInicial() {
+        JLabel lblMessage = new JLabel("Verificar!");
+        txtIP = new JTextField("127.0.0.1");
+        txtPorta = new JTextField("9000");
+        txtNome = new JTextField("Client");
+        Object[] texts = {lblMessage, txtIP, txtPorta, txtNome};
+        JOptionPane.showMessageDialog(null, texts);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        return true;
+    }
+
+    public void conectar() throws IOException {
+
+        socket = new Socket(txtIP.getText(), Integer.parseInt(txtPorta.getText()));
+        ou = socket.getOutputStream();
+        ouw = new OutputStreamWriter(ou);
+        bfw = new BufferedWriter(ouw);
+        bfw.write(txtNome.getText() + "\r\n");
+        bfw.flush();
+        System.out.println("foi");
+    }
+
+    public void escutar() throws IOException {
+
+        InputStream in = socket.getInputStream();
+        InputStreamReader inr = new InputStreamReader(in);
+        BufferedReader bfr = new BufferedReader(inr);
+        String msg = "";
+
+        while (!"Sair".equalsIgnoreCase(msg)) {
+            if (bfr.ready()) {
+                msg = bfr.readLine();
+                if (msg.equals("Sair")) {
+                    campoChat.append("Desconectado! \r\n");
+                } else {
+                    campoChat.append(msg + "\r\n");
+                }
+                System.out.println("foi2");
+            }
+        }
+    }
+
+    public void enviarMensagem(String msg) throws IOException {
+
+        if (msg.equals("Sair")) {
+            bfw.write("Desconectado \r\n");
+            campoChat.append("Desconectado \r\n");
+        } else {
+            bfw.write(msg + "\r\n");
+            campoChat.append(txtNome.getText() + " diz: " + entradaEnviar.getText() + "\r\n");
+            System.out.println("foi3");
+        }
+        bfw.flush();
+        entradaEnviar.setText("");
+    }
+
+    public void sair() throws IOException {
+
+        enviarMensagem("Sair");
+        bfw.close();
+        ouw.close();
+        ou.close();
+        socket.close();
+    }
 }
