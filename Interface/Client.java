@@ -185,7 +185,6 @@ public class Client extends JFrame{
         bfw = new BufferedWriter(ouw);
         bfw.write(txtNome.getText() + "\r\n");
         bfw.flush();
-        System.out.println("foi");
     }
 
     public void escutar() throws IOException {
@@ -203,7 +202,6 @@ public class Client extends JFrame{
                 } else {
                     campoChat.append(msg + "\r\n");
                 }
-                System.out.println("foi2");
             }
         }
     }
@@ -216,7 +214,6 @@ public class Client extends JFrame{
         } else {
             bfw.write(msg + "\r\n");
             campoChat.append(txtNome.getText() + " diz: " + entradaEnviar.getText() + "\r\n");
-            System.out.println("foi3");
         }
         bfw.flush();
         entradaEnviar.setText("");
