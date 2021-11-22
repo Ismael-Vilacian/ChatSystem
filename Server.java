@@ -17,10 +17,10 @@ public class Server extends Thread {
     private static ArrayList<BufferedWriter> clientes;
     private static ServerSocket server;
     private String nome;
-    private Socket con;
-    private InputStream in;
-    private InputStreamReader inr;
-    private BufferedReader bfr;
+    private Socket Socket;
+    private InputStream inputStream;
+    private InputStreamReader inputStreamReader;
+    private BufferedReader bufferedReader;
 
     public static void main(String []args) {
 
@@ -37,59 +37,59 @@ public class Server extends Thread {
       
            while(true){
              System.out.println("Aguardando conexão...");
-             Socket con = server.accept();
+             Socket conexao = server.accept();
              System.out.println("Cliente conectado...");
-             Thread t = new Server(con);
-              t.start();
+             Thread thread = new Server(conexao);
+              thread.start();
           }
       
-        }catch (Exception e) {
+        }catch (Exception exception) {
       
-          e.printStackTrace();
+          exception.printStackTrace();
         }
     }
       
 
-    public Server(Socket con) {
-        this.con = con;
+    public Server(Socket socket) {
+        this.Socket = socket;
         try {
-            in = con.getInputStream();
-            inr = new InputStreamReader(in);
-            bfr = new BufferedReader(inr);
-        } catch (IOException e) {
-            e.printStackTrace();
+            inputStream = socket.getInputStream();
+            inputStreamReader = new InputStreamReader(inputStream);
+            bufferedReader = new BufferedReader(inputStreamReader);
+        } catch (IOException iOException) {
+            iOException.printStackTrace();
         }
     }
 
     public void run() {
 
         try {
-            String msg;
-            OutputStream ou = this.con.getOutputStream();
-            Writer ouw = new OutputStreamWriter(ou);
-            BufferedWriter bfw = new BufferedWriter(ouw);
-            clientes.add(bfw);
-            nome = msg = bfr.readLine();
+            String mensagem;
+            OutputStream outputStream = this.Socket.getOutputStream();
+            Writer writer = new OutputStreamWriter(outputStream);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            clientes.add(bufferedWriter);
+            nome = mensagem = bufferedReader.readLine();
 
-            while (!"Sair".equalsIgnoreCase(msg) && msg != null) {
-                msg = bfr.readLine();
-                sendToAll(bfw, msg);
-                System.out.println(msg);
+            while (!"Sair".equalsIgnoreCase(mensagem) && mensagem != null) {
+                mensagem = bufferedReader.readLine();
+                sendToAll(bufferedWriter, mensagem);
+                System.out.println(mensagem);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
-    public void sendToAll(BufferedWriter bwSaida, String msg) throws IOException {
-        BufferedWriter bwS;
+    public void sendToAll(BufferedWriter bufferedWriterSaida, String mensagem) throws IOException {
+        BufferedWriter bufferedWriterS;
 
-        for (BufferedWriter bw : clientes) {
-            bwS = (BufferedWriter) bw;
-            if (!(bwSaida == bwS)) {
-                bw.write(nome + " -> " + msg + "\r\n");
-                bw.flush();
+        for (BufferedWriter bufferedWriter : clientes) {
+            bufferedWriterS = (BufferedWriter) bufferedWriter;
+            if (!(bufferedWriterSaida == bufferedWriterS)) {
+                bufferedWriter.write(nome + " -> " + mensagem + "\r\n");
+                bufferedWriter.flush();
             }
         }
     }

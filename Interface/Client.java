@@ -168,11 +168,11 @@ public class Client extends JFrame{
     }
 
     public boolean menuInicial() {
-        JLabel lblMessage = new JLabel("Verificar!");
+        JLabel jLabelMessage = new JLabel("Verificar!");
         IP = new JTextField("127.0.0.1");
         porta = new JTextField("9000");
         nomeUsuario = new JTextField("Usuario");
-        Object[] texts = {lblMessage, IP, porta, nomeUsuario};
+        Object[] texts = {jLabelMessage, IP, porta, nomeUsuario};
         JOptionPane.showMessageDialog(null, texts);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         return true;
@@ -190,30 +190,30 @@ public class Client extends JFrame{
 
     public void escutar() throws IOException {
 
-        InputStream in = socket.getInputStream();
-        InputStreamReader inr = new InputStreamReader(in);
-        BufferedReader bfr = new BufferedReader(inr);
-        String msg = "";
+        InputStream inputStream = socket.getInputStream();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        String mensagem = "";
 
-        while (!"Sair".equalsIgnoreCase(msg)) {
-            if (bfr.ready()) {
-                msg = bfr.readLine();
-                if (msg.equals("Sair")) {
+        while (!"Sair".equalsIgnoreCase(mensagem)) {
+            if (bufferedReader.ready()) {
+                mensagem = bufferedReader.readLine();
+                if (mensagem.equals("Sair")) {
                     campoChat.append(nomeUsuario.getText() + " Desconectado! \r\n");
                 } else {
-                    campoChat.append(msg + "\r\n");
+                    campoChat.append(mensagem + "\r\n");
                 }
             }
         }
     }
 
-    public void enviarMensagem(String msg) throws IOException {
+    public void enviarMensagem(String mensagem) throws IOException {
 
-        if (msg.equals("Sair")) {
+        if (mensagem.equals("Sair")) {
             bufferedWriter.write("Desconectado \r\n");
             campoChat.append("Desconectado \r\n");
         } else {
-            bufferedWriter.write(msg + "\r\n");
+            bufferedWriter.write(mensagem + "\r\n");
             campoChat.append(nomeUsuario.getText() + " diz: " + entradaEnviar.getText() + "\r\n");
         }
         bufferedWriter.flush();
