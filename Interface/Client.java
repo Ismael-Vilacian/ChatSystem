@@ -30,6 +30,18 @@ public class Client extends JFrame{
     private JTextField txtPorta;
     private JTextField txtNome;
 
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+        for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            if ("Windows".equals(info.getName())) {
+                UIManager.setLookAndFeel(info.getClassName());
+                break;
+            }
+        }
+        Client init = new Client();
+        init.conectar();
+        init.escutar();
+    }
+
     @SuppressWarnings("unchecked")
     private void initComponents() {
 
