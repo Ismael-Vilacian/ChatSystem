@@ -23,12 +23,12 @@ public class Client extends JFrame{
     private javax.swing.JScrollPane jScrollPane1;
     private static final long serialVersionUID = 1L;
     private Socket socket;
-    private OutputStream ou;
-    private Writer ouw;
-    private BufferedWriter bfw;
-    private JTextField txtIP;
-    private JTextField txtPorta;
-    private JTextField txtNome;
+    private OutputStream outputStream;
+    private Writer writer;
+    private BufferedWriter bufferedWriter;
+    private JTextField IP;
+    private JTextField porta;
+    private JTextField nomeUsuario;
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
@@ -139,6 +139,7 @@ public class Client extends JFrame{
         );
         setResizable(false);
         setLocationRelativeTo(null);
+        setTitle("Usuario - " + nomeUsuario.getText());
     }
 
     private void botaoEnviarActionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,10 +169,10 @@ public class Client extends JFrame{
 
     public boolean menuInicial() {
         JLabel lblMessage = new JLabel("Verificar!");
-        txtIP = new JTextField("127.0.0.1");
-        txtPorta = new JTextField("9000");
-        txtNome = new JTextField("Client");
-        Object[] texts = {lblMessage, txtIP, txtPorta, txtNome};
+        IP = new JTextField("127.0.0.1");
+        porta = new JTextField("9000");
+        nomeUsuario = new JTextField("Usuario");
+        Object[] texts = {lblMessage, IP, porta, nomeUsuario};
         JOptionPane.showMessageDialog(null, texts);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         return true;
@@ -179,12 +180,12 @@ public class Client extends JFrame{
 
     public void conectar() throws IOException {
 
-        socket = new Socket(txtIP.getText(), Integer.parseInt(txtPorta.getText()));
-        ou = socket.getOutputStream();
-        ouw = new OutputStreamWriter(ou);
-        bfw = new BufferedWriter(ouw);
-        bfw.write(txtNome.getText() + "\r\n");
-        bfw.flush();
+        socket = new Socket(IP.getText(), Integer.parseInt(porta.getText()));
+        outputStream = socket.getOutputStream();
+        writer = new OutputStreamWriter(outputStream);
+        bufferedWriter = new BufferedWriter(writer);
+        bufferedWriter.write(nomeUsuario.getText() + "\r\n");
+        bufferedWriter.flush();
     }
 
     public void escutar() throws IOException {
@@ -198,7 +199,7 @@ public class Client extends JFrame{
             if (bfr.ready()) {
                 msg = bfr.readLine();
                 if (msg.equals("Sair")) {
-                    campoChat.append("Desconectado! \r\n");
+                    campoChat.append(nomeUsuario.getText() + " Desconectado! \r\n");
                 } else {
                     campoChat.append(msg + "\r\n");
                 }
@@ -209,22 +210,22 @@ public class Client extends JFrame{
     public void enviarMensagem(String msg) throws IOException {
 
         if (msg.equals("Sair")) {
-            bfw.write("Desconectado \r\n");
+            bufferedWriter.write("Desconectado \r\n");
             campoChat.append("Desconectado \r\n");
         } else {
-            bfw.write(msg + "\r\n");
-            campoChat.append(txtNome.getText() + " diz: " + entradaEnviar.getText() + "\r\n");
+            bufferedWriter.write(msg + "\r\n");
+            campoChat.append(nomeUsuario.getText() + " diz: " + entradaEnviar.getText() + "\r\n");
         }
-        bfw.flush();
+        bufferedWriter.flush();
         entradaEnviar.setText("");
     }
 
     public void sair() throws IOException {
 
         enviarMensagem("Sair");
-        bfw.close();
-        ouw.close();
-        ou.close();
+        bufferedWriter.close();
+        writer.close();
+        outputStream.close();
         socket.close();
     }
 }
